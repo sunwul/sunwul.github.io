@@ -1,8 +1,142 @@
-<html>
 
-<body>
-<div>
-<h1>Hello World!</h1>
-</div>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的个人博客</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 自定义滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        /* iframe 加载动画 */
+        .iframe-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        
+        /* 侧边栏激活状态过渡 */
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+        .nav-item.active {
+            background-color: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5);
+        }
+        .nav-item:hover:not(.active) {
+            background-color: #f1f5f9;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- 左侧侧边栏 -->
+    <aside class="w-64 bg-white shadow-xl flex flex-col z-20 transition-all duration-300" id="sidebar">
+        <!-- Logo 区域 -->
+        <div class="h-16 flex items-center justify-center border-b border-gray-100">
+            <div class="flex items-center space-x-2 text-blue-600 font-bold text-xl">
+                <i class="fa-solid fa-pen-nib"></i>
+                <span>MyBlog</span>
+            </div>
+        </div>
+
+        <!-- 菜单列表 -->
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <!-- 首页 -->
+            <a href="#" data-url="home.html" class="nav-item active flex items-center px-4 py-3 text-sm font-medium rounded-lg group">
+                <i class="fa-solid fa-house w-6 text-center mr-2"></i>
+                <span>首页概览</span>
+            </a>
+
+            <!-- 技术文章 -->
+            <a href="#" data-url="tech.html" class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg group">
+                <i class="fa-solid fa-code w-6 text-center mr-2"></i>
+                <span>技术文章</span>
+            </a>
+
+            <!-- 生活随笔 -->
+            <a href="#" data-url="life.html" class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg group">
+                <i class="fa-solid fa-coffee w-6 text-center mr-2"></i>
+                <span>生活随笔</span>
+            </a>
+
+            <!-- 项目展示 -->
+            <a href="#" data-url="projects.html" class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg group">
+                <i class="fa-solid fa-folder-open w-6 text-center mr-2"></i>
+                <span>项目展示</span>
+            </a>
+
+            <!-- 关于我 -->
+            <a href="#" data-url="about.html" class="nav-item flex items-center px-4 py-3 text-sm font-medium text-gray-600 rounded-lg group">
+                <i class="fa-solid fa-user w-6 text-center mr-2"></i>
+                <span>关于我</span>
+            </a>
+        </nav>
+
+        <!-- 底部用户信息 -->
+        <div class="p-4 border-t border-gray-100">
+            <div class="flex items-center space-x-3">
+                <img src="https://picsum.photos/100/100?random=user" alt="用户头像" class="w-10 h-10 rounded-full object-cover border-2 border-blue-100">
+                <div>
+                    <p class="text-sm font-semibold text-gray-700">博主名称</p>
+                    <p class="text-xs text-gray-500">前端开发者</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 右侧内容区域 -->
+    <main class="flex-1 flex flex-col h-full relative bg-gray-50">
+        <!-- 顶部导航栏 (可选，用于显示面包屑或搜索) -->
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 z-10">
+            <h2 id="page-title" class="text-lg font-semibold text-gray-800">首页概览</h2>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-500 hover:text-blue-600 transition"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <button class="text-gray-500 hover:text-blue-600 transition"><i class="fa-solid fa-bell"></i></button>
+            </div>
+        </header>
+
+        <!-- 内容承载区 (Iframe) -->
+        <div class="flex-1 relative overflow-hidden">
+            <!-- 加载指示器 -->
+            <div id="loader" class="iframe-loader hidden">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+            
+            <!-- Iframe 用于加载外部 HTML 文件 -->
+            <iframe 
+                id="content-frame" 
+                name="content-frame" 
+                src="home.html" 
+                class="w-full h-full border-0"
+                onload="hideLoader()"
+                onerror="handleLoadError()">
+            </iframe>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
 </body>
 </html>
